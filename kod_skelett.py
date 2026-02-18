@@ -8,7 +8,7 @@ L = 2
 A0 = 78.5e-4 
 A_spec = A0*2
 P = 150e3
-sigmas = 230e6
+sigma_s = 230e6
 
 ## Topology
 Edof = np.array([  #det är denna som bestämmer hur figuren ser ut. den fungerar så att det är frihetsgraderna för startnoden samt slutnoden.
@@ -157,7 +157,7 @@ print(f"Störst tryckspänning: Stång {imin+1}  sigma = {Spänningar[imin]/1e6:
 
 plt.show()
 
-#uppgift 5
+#uppgift 5 a)
 #vi har redan hittar vilken den största spänningen är vilket är den i stång 7 (negativ spänning)
 #Vi ska nu kolla på hur stor P kan vara innan stången med mest spänniong i når flytspänningen, som är 230Mpa
 #vi kan då sätta upp ett samband mellan den maximala vi har med nuvarande maximala spänning och nuvarande P och Pmax och flytspänningen, eftersom tvärsnittsarean kommer vara samma oavsett
@@ -168,6 +168,17 @@ else:
     sigma_max = Spänningar[imin]
 
 #sambandet som kan ställas upp ser ut som P/sigma_max = Pmax/flytspänning, detta ger
-P_max = P * (sigmas/sigma_max)
+P_max = P * (sigma_s/sigma_max)
 print(f"Maximal spänning i fackverket: {abs(sigma_max)/1e6:.2f} MPa")
 print(f"Fackverket plasticerar vid P_max = {abs(P_max)/1e3:.2f} kN")
+
+#uppgift 5 b)
+#nu ska vi göra samma sak fast att det istället är P som är 'max' värdet, och att det är detta värdet som är låst
+# detta kommer leda till att vi ändrar arean och då kommer spänningen att öka. 
+#Vi får fram formeln genom att först se att vi kan får p = sigma_max*A0, där sigma_max äe det största spänningen i fackverket,
+#vi får även p = sigma_s * a_min, där sigma_s är flytspänningen
+#Detta ger sedan med omskrivninvg: A_min = A0*(sigma_max/sigma_s)
+
+A_min = A0 * (abs(sigma_max) / sigma_s)  #beräkning av minsta tillåtna tvärsnittsarea för given flytspänning och kraft P
+print(f'Vid P = 150kn är minsta tillåtna arean utan att fackverket ska plactisera {A_min*1e4:.2f} cm^2')
+#kontroll beräknaing stämmer överens
