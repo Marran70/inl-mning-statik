@@ -134,12 +134,13 @@ for el in range(nel):
     #plt.plot funkar så att när vi kör linan så ritar den en linje och *kommer ihåg* denna. Därför kan vi rita figuren med olika färger här. och därför måste vi ha den i loopen
     #det är inte förens vi kör plt.show(), (utanför loopen) som hela fguren till slut visas.
 
-    #stångkraften beräknas sedan enligt formeln som jag skrev tidigare i dokumentet, 
-    sigma_el =  N_el/ A 
-    Stångkrafter.append(N_el[0])  #lägga till stångkrafter och spänningar i tidigare listor
+    #stångspänningen beräknas sedan enligt formeln som jag skrev tidigare i dokumentet, 
+    sigma_el =  N_el/ A  #här beräknar vi spänningen
+
+    Stångkrafter.append(N_el[0])  #lägga till stångkrafter och spänningar i listor
     Spänningar.append(sigma_el[0])
 
-    #print(Stångkrafter, Spänningar)
+    #printa stångkrafter och spänningar
     print(f"{el+1} {N_el[0]/1000:10.2f}   {sigma_el[0]/1e6:10.2f}") #printa ut alla sigam och stångkrafter samt avrunda till finare tal. 
 
 
@@ -149,8 +150,24 @@ Spänningar = np.array(Spänningar)
 imax = np.argmax(Spänningar)   # störst drag
 imin = np.argmin(Spänningar)   # störst tryck
 
+
 print("\nResultat:")
 print(f"Störst dragspänning:  Stång {imax+1}  sigma = {Spänningar[imax]/1e6:.2f} MPa")
 print(f"Störst tryckspänning: Stång {imin+1}  sigma = {Spänningar[imin]/1e6:.2f} MPa")
 
 plt.show()
+
+#uppgift 5
+#vi har redan hittar vilken den största spänningen är vilket är den i stång 7 (negativ spänning)
+#Vi ska nu kolla på hur stor P kan vara innan stången med mest spänniong i når flytspänningen, som är 230Mpa
+#vi kan då sätta upp ett samband mellan den maximala vi har med nuvarande maximala spänning och nuvarande P och Pmax och flytspänningen, eftersom tvärsnittsarean kommer vara samma oavsett
+
+if abs(Spänningar[imax]) > abs(Spänningar[imin]):
+    sigma_max = Spänningar[imax]
+else:
+    sigma_max = Spänningar[imin]
+
+#sambandet som kan ställas upp ser ut som P/sigma_max = Pmax/flytspänning, detta ger
+P_max = P * (sigmas/sigma_max)
+print(f"Maximal spänning i fackverket: {abs(sigma_max)/1e6:.2f} MPa")
+print(f"Fackverket plasticerar vid P_max = {abs(P_max)/1e3:.2f} kN")
