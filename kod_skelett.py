@@ -5,7 +5,7 @@ from utils import *
 ## Indata (Geometry, meterial)
 E = 210e9
 L = 2
-A0 = 78.5e-4 #cm3
+A0 = 78.5e-4 
 A_spec = A0*2
 P = 150e3
 sigmas = 230e6
@@ -121,6 +121,18 @@ for el in range(nel):
 
     #anbvänd bars2s funktion för att beräkna spänningen i aktuellt element. 
     N_el = bar2s(ex, ey, ep, ed) #denna returnerar en array som innehåller stångkrafterna. 
+    #lägger till if sats för att kunna bestämma om det är en drag eller tryckkraft. 
+    #tryckkrafter är när normalkrafter i är positiv i riktningen vi har valt och drag är när den är negativ i riktningen vi valt. 
+    if N_el > 0:  #kolla om normalkraften i stången är större än 0, eller positiv
+        c = "blue"  #ändra färg på stång beroende på resultat
+    elif N_el < 0:
+        c = "red"  #ändra färg på sdtång beroende på resultat. 
+    else:
+        c = "black" # Nollkraftstänger, alltså stäner me dinte normalkraft i någon riktning, N=0
+
+    plt.plot(ex, ey, color=c, linewidth=2)  #istället för att använda eldraw2, som är byggd så att den ritar upp hela fackverket med samma färg. så kan vi måla upp fackverket såhär istället. 
+    #plt.plot funkar så att när vi kör linan så ritar den en linje och *kommer ihåg* denna. Därför kan vi rita figuren med olika färger här. och därför måste vi ha den i loopen
+    #det är inte förens vi kör plt.show(), (utanför loopen) som hela fguren till slut visas.
 
     #stångkraften beräknas sedan enligt formeln som jag skrev tidigare i dokumentet, 
     sigma_el =  N_el/ A 
@@ -141,5 +153,4 @@ print("\nResultat:")
 print(f"Störst dragspänning:  Stång {imax+1}  sigma = {Spänningar[imax]/1e6:.2f} MPa")
 print(f"Störst tryckspänning: Stång {imin+1}  sigma = {Spänningar[imin]/1e6:.2f} MPa")
 
-
-    #... tips: använd bar2s i utils.py
+plt.show()
