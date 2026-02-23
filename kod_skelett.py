@@ -77,7 +77,7 @@ for el in range(nel):
         [-c*s, -s**2, c*s, s**2]
     ])
     
-    #Assemblera in element styvhetsmatrisen och globala matrisen
+    #Assemblera in element styvhetsmatrisen och globala matrisen, vi får sjävla ekvationssystemet
     K = assem(Edof[el, :], K, Ke)
 
 # Lägg till kraften P i lastvektorn:
@@ -122,16 +122,16 @@ for el in range(nel):
     #anbvänd bars2s funktion för att beräkna spänningen i aktuellt element. 
     N_el = bar2s(ex, ey, ep, ed) #denna returnerar en array som innehåller stångkrafterna. 
     #lägger till if sats för att kunna bestämma om det är en drag eller tryckkraft. 
-    #tryckkrafter är när normalkrafter i är positiv i riktningen vi har valt och drag är när den är negativ i riktningen vi valt. 
+    #tryckkrafter är när normalkrafter i är negativ i riktningen vi har valt och drag är när den är positib i riktningen vi valt. 
     if N_el > 0:  #kolla om normalkraften i stången är större än 0, eller positiv
-        c = "blue"  #ändra färg på stång beroende på resultat
+        c = "blue"  #ändra färg på stång beroende på resultat 
     elif N_el < 0:
         c = "red"  #ändra färg på sdtång beroende på resultat. 
     else:
         c = "black" # Nollkraftstänger, alltså stäner me dinte normalkraft i någon riktning, N=0
 
     plt.plot(ex, ey, color=c, linewidth=2)  #istället för att använda eldraw2, som är byggd så att den ritar upp hela fackverket med samma färg. så kan vi måla upp fackverket såhär istället. 
-    #plt.plot funkar så att när vi kör linan så ritar den en linje och *kommer ihåg* denna. Därför kan vi rita figuren med olika färger här. och därför måste vi ha den i loopen
+    #plt.plot funkar så att när vi kör raden av kod så ritar den en linje och *kommer ihåg* denna. Därför kan vi rita figuren med olika färger här. och därför måste vi ha den i loopen
     #det är inte förens vi kör plt.show(), (utanför loopen) som hela fguren till slut visas.
 
     #stångspänningen beräknas sedan enligt formeln som jag skrev tidigare i dokumentet, 
@@ -155,6 +155,7 @@ print("\nResultat:")
 print(f"Störst dragspänning:  Stång {imax+1}  sigma = {Spänningar[imax]/1e6:.2f} MPa")
 print(f"Störst tryckspänning: Stång {imin+1}  sigma = {Spänningar[imin]/1e6:.2f} MPa")
 
+plt.title("Fackverk: drag = blått, tryck = röds")
 plt.show()
 
 #uppgift 5 a)
