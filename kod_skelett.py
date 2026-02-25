@@ -1,3 +1,7 @@
+#Detta program är den finit elemend metod för att analysera olika saker på ett fackverk. 
+#vi ser bland annat saker som förskjutningar, spänningar och visualiseringar på hur fackverket ser ut efter deformering
+#GRUPP 41, Måns persson, Lucas Ödmar
+
 import numpy as np
 import matplotlib.pyplot as plt
 from utils import *
@@ -92,7 +96,7 @@ a, Q = solveq(K, f, bcdofs, bcvals)
 
 # Plotta deformerad mesh (: använd eldisp2 i utils.py)
 print("Knutförskjutningar (a):")
-print(a) #printar förkjutningsvektorn. 
+print(a, '(Meter)') #printar förkjutningsvektorn. 
 
 plt.figure()
 eldraw2(Ex, Ey, width=1, color="black") # Ursprunglig form
@@ -141,7 +145,7 @@ for el in range(nel):
     Spänningar = np.append(Spänningar, sigma_el[0])
 
     #printa stångkrafter och spänningar
-    print(f"{el+1} {N_el[0]/1000:10.2f}   {sigma_el[0]/1e6:10.2f}") #printa ut alla sigam och stångkrafter samt avrunda till finare tal. 
+    print(f"{el+1} {N_el[0]/1000:10.2f} kN  {sigma_el[0]/1e6:10.2f} Mpa") #printa ut alla sigam och stångkrafter samt avrunda till finare tal. 
 
 
 
