@@ -70,7 +70,7 @@ for el in range(nel):
 
     k_faktor = (E*A/L_el)  # detta är som formeln vi gick igenom på föreläsningen, alltså aktuell tväsnittarea och aktuellt längd på elementet (stålpen) vi just nu kollar på
 
-    Ke = k_faktor*np.array([  #detta är Ekvation 11.18 i kursboken och det som tagitsfram här är produkten med k faktorn och stychetsmatrisen
+    Ke = k_faktor*np.array([  #detta är Ekvation 11.18 i kursboken och det som tagitsfram här är produkten med k faktorn och stychetsmatrisen för relevanta elementet
         [c**2, c*s, -c**2, -c*s],
         [c*s, s**2, -c*s, -s**2],
         [-c**2, -c*s, c**2, c*s],
@@ -96,7 +96,7 @@ print(a) #printar förkjutningsvektorn.
 
 plt.figure()
 eldraw2(Ex, Ey, width=1, color="black") # Ursprunglig form
-Ed = extract_eldisp(Edof, a)
+Ed = extract_eldisp(Edof, a) #vi hämtar förskutningarna för varje element från den globala vektorn a genom att använda extract_eldisp ifrån utils.
 eldisp2(Ex, Ey, Ed, sfac=50, width=2, color="blue") # Deformerad form
 
 plt.title("Fackverk: Odefomerad (svart) och Deformerad (blå, 50x skala)")
@@ -104,8 +104,8 @@ plt.axis("equal")
 plt.show()
 
 # Räkna ut krafter och spänningar i varje element
-Stångkrafter = []
-Spänningar = []
+Stångkrafter = np.array([])
+Spänningar = np.array([])
 
 for el in range(nel):
     #hämta ut det aktuella elementets (stångens) koordinater, 
@@ -115,11 +115,11 @@ for el in range(nel):
     
     A = A_spec if el in [3, 5, 8] else A0 # ser till så att vi får rätt are för stången vi är på nu. 
     ep = [E, A] #detta står i bar2s funktionen i utils. 
-     #vi hämtar förskutningarna för varje element från den globala vektorn a genom att använda extract_eldisp ifrån utils.
+     
      #edof[el,:] bestämmet vilka frihetsgrader denna stången har. 
     ed = extract_eldisp(Edof[el:el+1, :], a)
 
-    #anbvänd bars2s funktion för att beräkna spänningen i aktuellt element. 
+    #anbvänd bars2s funktion för att beräkna få ut kraften i aktuellt element. 
     N_el = bar2s(ex, ey, ep, ed) #denna returnerar en array som innehåller stångkrafterna. 
     #lägger till if sats för att kunna bestämma om det är en drag eller tryckkraft. 
     #tryckkrafter är när normalkrafter i är positiv i riktningen vi har valt och drag är när den är negativ i riktningen vi valt. 
@@ -137,15 +137,14 @@ for el in range(nel):
     #stångspänningen beräknas sedan enligt formeln som jag skrev tidigare i dokumentet, 
     sigma_el =  N_el/ A  #här beräknar vi spänningen
 
-    Stångkrafter.append(N_el[0])  #lägga till stångkrafter och spänningar i listor
-    Spänningar.append(sigma_el[0])
+    Stångkrafter = np.append(Stångkrafter, N_el[0])  #lägga till stångkrafter och spänningar i listor
+    Spänningar = np.append(Spänningar, sigma_el[0])
 
     #printa stångkrafter och spänningar
     print(f"{el+1} {N_el[0]/1000:10.2f}   {sigma_el[0]/1e6:10.2f}") #printa ut alla sigam och stångkrafter samt avrunda till finare tal. 
 
 
-Stångkrafter = np.array(Stångkrafter)
-Spänningar = np.array(Spänningar)
+
 
 imax = np.argmax(Spänningar)   # störst drag
 imin = np.argmin(Spänningar)   # störst tryck
